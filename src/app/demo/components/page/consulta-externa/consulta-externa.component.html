@@ -1,0 +1,12 @@
+<p-toast (life)="1000"></p-toast>
+<div class="grid">
+	<div class="col-12">
+		<div class="card">
+            <app-barra-produccion [titulo]="titulo" [loading]="loadingCarga" (cargar)="cargarDatos()" (guardar)="guardar()" (abrir)="abrirDialogo()"></app-barra-produccion>
+
+            <app-tabla-editar [datos]="lstHojas"  [loading]="loading" (editar)="actualizar($event)"></app-tabla-editar> 
+
+            <app-file-upload-dialog [(visible)]="visible" titulo="Subir archivo Excel - Consulta Externa"  (archivoSeleccionado)="onArchivoSeleccionado($event)"  (cancelar)="cerrarDialogo()"  (subir)="subirArchivo()"></app-file-upload-dialog>
+        </div>
+    </div>   
+</div>

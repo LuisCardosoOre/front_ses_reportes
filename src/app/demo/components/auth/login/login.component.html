@@ -1,0 +1,24 @@
+<div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
+    <div class="flex flex-column align-items-center justify-content-center">
+        <img src="assets/layout/images/logo-essalud.svg" alt="Essalud logo" class="mb-5 w-6rem flex-shrink-0">                
+        <div style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);">
+            <div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius:53px">
+                <div class="text-center mb-5">
+
+                    <div class="text-900 text-3xl font-medium mb-3">Sistema de Estadìstico de Salud</div>
+                    <span class="text-600 font-medium">Ingreso al sistema</span>
+                </div>
+
+                <div>
+                    <label for="email1" class="block text-900 text-xl font-medium mb-2">Usuario</label>
+                    <input id="email1" type="text" placeholder="Ingrese su Usuario" pInputText class="w-full md:w-60rem mb-5" style="padding:1rem">
+
+                    <label for="password1" class="block text-900 text-xl font-medium  mb-2">Contraseña</label>
+                    <p-password id="password1" [(ngModel)]="password" placeholder="Ingrese su Contraseña" [toggleMask]="true" styleClass="w-full md:w-60rem mb-5" inputStyleClass="w-full p-3 md:w-60rem"></p-password>
+
+                    <button pButton pRipple label="Ingresar" class="w-full p-3 text-xl" [routerLink]="['/']"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

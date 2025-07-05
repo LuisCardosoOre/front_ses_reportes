@@ -1,0 +1,36 @@
+<div class="dropdown-section">
+  <div class="dropdowns">
+    <p-dropdown 
+      [options]="periodo" 
+      [(ngModel)]="selectedPeriodo" 
+      (onChange)="onPeriodoChange()" 
+      placeholder="Selecciona año" 
+      optionLabel="name"
+      >
+    </p-dropdown>
+
+    <p-dropdown 
+      [options]="hojas" 
+      [(ngModel)]="selectedHojas" 
+      (onChange)="onHojaChange()" 
+      placeholder="Selecciona tipo de hoja" 
+      optionLabel="name"
+      >
+    </p-dropdown>
+  </div>
+
+  <div class="apply-button">
+    <p-button 
+      label="Buscar" 
+      icon="pi pi-search" 
+      [loading]="loading" 
+      (onClick)="cargar.emit()" />
+  </div>
+</div>
+<div class="page-header">
+  <h5>{{ titulo }}</h5>
+  <div class="header-buttons">
+    <p-button label="Cargar" icon="pi pi-upload"   (onClick)="abrir.emit()" />
+    <p-button label="Guardar" styleClass="p-button-raised p-button-text" (onClick)="guardar.emit()" />
+  </div>  
+</div>

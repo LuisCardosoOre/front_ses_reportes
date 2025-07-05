@@ -1,0 +1,17 @@
+<p-dialog [(visible)]="visible" [header]="titulo" [style]="{width: '400px'}">
+  
+  <p-fileUpload 
+    name="archivo"
+    [customUpload]="true"
+    (onSelect)="onFileSelect($event)"
+    accept=".xlsx,.xls"
+    mode="basic"
+    chooseLabel="Elegir archivo"
+    [auto]="false">
+  </p-fileUpload>
+
+  <div class="mt-3 flex justify-end gap-2">
+    <button pButton label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="onCancelar()"></button>
+    <button pButton label="Subir" icon="pi pi-upload" (click)="onSubir()"></button>
+  </div>
+</p-dialog>
