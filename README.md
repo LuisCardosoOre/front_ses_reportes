@@ -1,5 +1,9 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Sakai
+=======
+# SES REPORTE
+>>>>>>> 1b830ecb6164f812df3b2107e1f2e0511a1f01c6
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.0.4.
 
