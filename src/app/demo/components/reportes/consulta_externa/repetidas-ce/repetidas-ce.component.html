@@ -62,7 +62,7 @@
                 <p-button label="Exportar" icon="pi pi-file-excel" styleClass="p-button-success"
                     (click)="exportarServiciosOriginalesCompleto()" />
             </div>
-            <h5>Producción Estadística Validada de Consulta Médica de Consulta Externa</h5>
+            <h5>{{ tituloReporte }}</h5>
             <p-table [value]="lstServicios" dataKey="desc_servicio" [loading]="loading" [expandedRowKeys]="expandedRows"
                 [paginator]="true" [rows]="5" responsiveLayout="scroll">
                 <ng-template pTemplate="caption">

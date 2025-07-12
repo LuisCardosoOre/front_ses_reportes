@@ -1,0 +1,123 @@
+<div class="grid">
+  <p-toast (life)="(1000)"></p-toast>
+
+  <div class="col-12">
+    <div class="card p-fluid">
+      <ng-container *ngIf="!loading; else skeletonFiltros">
+        <div class="formgrid grid">
+          <div class="field col-12 md:col-3">
+            <label>Red</label>
+            <p-dropdown [options]="redes" optionLabel="desc_red" [(ngModel)]="selectedRed" placeholder="Seleccione red">
+            </p-dropdown>
+          </div>
+          <div class="field col-12 md:col-3">
+            <label>Centro</label>
+            <p-dropdown [options]="selectedRed?.centros || []" optionLabel="desc_centro" [(ngModel)]="selectedCentro"
+              placeholder="Seleccione centro" [disabled]="!selectedRed">
+            </p-dropdown>
+          </div>
+          <div class="field col-12 md:col-3">
+            <label>Periodo</label>
+            <p-dropdown [options]="periodos" [(ngModel)]="selectedPeriodo" placeholder="Todos los periodos" >
+            </p-dropdown>
+          </div>
+          <div class="field col-12 md:col-3">
+            <label>Tipo Asegurado</label>
+            <p-dropdown [options]="codigosPaciente" [(ngModel)]="selectedTipoPaciente" optionLabel="label"   optionValue="value"
+              placeholder="Todos los tipos">
+            </p-dropdown>
+          </div>
+        </div>
+        <div class="flex justify-content-end gap-2 mt-2">
+          <p-button label="Aplicar Filtros" icon="pi pi-filter" (click)="aplicarFiltros()" />
+          <p-button label="Limpiar Filtros" icon="pi pi-times" severity="secondary" (click)="limpiarFiltros()" />
+           <p-button label="Exportar" icon="pi pi-file-excel" styleClass="p-button-success" (click)="exportarTodos()" />
+        </div>
+      </ng-container>
+      <ng-template #skeletonFiltros>
+        <div class="formgrid grid">
+          <div class="field col-12 md:col-3" *ngFor="let i of [1, 2, 3, 4]">
+            <p-skeleton height="2rem" class="mb-2"></p-skeleton>
+            <p-skeleton height="2.5rem" styleClass="mb-2" borderRadius="6px"></p-skeleton>
+          </div>
+        </div>
+        <div class="flex justify-content-end gap-2 mt-3">
+          <p-skeleton height="2.5rem" width="9rem" styleClass="mr-2 border-round" borderRadius="6px"></p-skeleton>
+          <p-skeleton height="2.5rem" width="10rem" styleClass="border-round" borderRadius="6px"></p-skeleton>
+        </div>
+      </ng-template>
+    </div>
+  </div>  
+
+    <div class="col-12 lg:col-6 xl:col-3"
+    *ngFor="let tarjeta of loading ? placeholders : getTarjetasFiltradas(['DEFUNCIONES', 'Prioridad II','Prioridad III','Prioridad IV'])">
+    <div class="card mb-0">
+      <ng-container *ngIf="!loading; else skeletonTotal">
+        <div class="flex justify-content-between mb-3">
+
+          <div>
+            <span class="block text-500 font-medium mb-3">{{
+              loading ? tarjeta.tipo : tarjeta.tipo
+              }}</span>
+            <div class="text-900 font-medium text-xl">
+              Total: {{ tarjeta.total | number }}
+            </div>
+          </div>
+          <div class="flex align-items-center justify-content-center bg-blue-100 border-round"
+            [ngStyle]="{ width: '2.5rem', height: '2.5rem' }">
+            <i class="pi pi-users text-blue-500 text-xl"></i>
+          </div>
+
+        </div>
+      </ng-container>
+      <ng-template #skeletonTotal>
+        <div class="flex justify-content-between align-items-start mb-3">
+          <div>
+            <p-skeleton width="60%" height="1rem" class="mb-2" borderRadius="6px"></p-skeleton>
+            <p-skeleton width="40%" height="1.5rem" borderRadius="6px"></p-skeleton>
+          </div>
+          <div class="flex align-items-center justify-content-center bg-blue-100 border-round"
+            [ngStyle]="{ width: '2.5rem', height: '2.5rem' }">
+            <p-skeleton width="1.8rem" height="1.8rem" borderRadius="50%" class="m-auto"></p-skeleton>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <div class="col-12 md:col-4 " *ngFor="let tarjeta of loading ? placeholders : getTarjetasFiltradas(['Prioridad I', 'Prioridad II','Prioridad III','Prioridad IV','Egreso Obs > 24 Hr','Egreso Obs <= 24 Hr'])">
+    <div class="card">
+      <h5 class="mb-1 text-primary">
+        {{ loading ? tarjeta.tipo  : tarjeta.tipo  }}
+      </h5>
+
+      <ng-container *ngIf="!loading; else skeletonTabla">
+        <p class="mb-2 text-secondary">
+          Total: {{ tarjeta.total | number }}
+        </p>
+        <p-table [value]="tarjeta.lista" [paginator]="true" [rows]="5" responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Periodo</th>
+              <th>Área Emergencia</th>
+              <th>Cantidad</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td>{{ row.periodo }}</td>
+              <td>{{ row.area   }}</td>
+              <td>{{ row.cantidad | number }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </ng-container>
+
+      <ng-template #skeletonTabla>
+        <p-skeleton *ngFor="let i of [1, 2, 3, 4, 5]" height="1.5rem" class="mb-2"></p-skeleton>
+      </ng-template>
+    </div>
+  </div>    
+
+
+</div>

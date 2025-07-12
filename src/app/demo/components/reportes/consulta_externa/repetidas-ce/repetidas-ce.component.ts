@@ -2,25 +2,26 @@ import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { finalize, forkJoin } from 'rxjs';
 import { Centro, Red } from 'src/app/demo/api/centros.models';
-import { AgrupadoProduccionCE, ProduccionCE, Subactividad } from 'src/app/demo/api/ceproduccion.models';
+import { AgrupadoRepetidasCE, RepetidasCE, SubactividadRE } from 'src/app/demo/api/cerepetidas.models';
 import { Agrupador, Especialidad, Variable } from 'src/app/demo/api/filtros.models';
 import { ProduccionCeService } from 'src/app/demo/service/produccion-ce.service';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
 @Component({
-  selector: 'app-produccion',
-  templateUrl: './produccion.component.html',
-  styleUrls: ['./produccion.component.scss']
+  selector: 'app-repetidas-ce',
+  templateUrl: './repetidas-ce.component.html',
+  styleUrls: ['./repetidas-ce.component.scss']
 })
-export class ProduccionComponent implements OnInit {
+export class RepetidasCeComponent implements OnInit {
 
   loading: boolean = false;
-  expandedRows : { [key: string]: boolean } = {};
+  tituloReporte: String = "";
+  expandedRows: { [key: string]: boolean } = {};
 
   meses: string[] = ['01', '02', '03', '04', '05'];
-  lstServicios: AgrupadoProduccionCE[] = [];
-  lst: ProduccionCE[] = [];
+  lstServicios: AgrupadoRepetidasCE[] = [];
+  lst: RepetidasCE[] = [];
 
   //filtros
   redes: Red[] = [];
@@ -54,6 +55,7 @@ export class ProduccionComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = true;
+    this.tituloReporte = 'Registros Excluidos - Repetidos';
 
     forkJoin({
       centros: this.cepService.getCentros(),
@@ -61,11 +63,11 @@ export class ProduccionComponent implements OnInit {
       especialidad: this.cepService.getEspecialidad(),
       agrupador: this.cepService.getAgrupador()
     }).subscribe({
-      next: ({ centros, variables,especialidad,agrupador }) => {
+      next: ({ centros, variables, especialidad, agrupador }) => {
         this.redes = centros;
         this.variable = variables;
         this.especialidad = especialidad;
-        this.agrupador =agrupador;
+        this.agrupador = agrupador;
       },
       error: err => {
         console.error('Error en las llamadas:', err);
@@ -74,7 +76,7 @@ export class ProduccionComponent implements OnInit {
 
 
 
-    this.cepService.getAllProduccion()
+    this.cepService.getAllRepetidas()
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -94,13 +96,13 @@ export class ProduccionComponent implements OnInit {
 
   }
 
-  calcularTotalMes(subs: Subactividad[], mes: string): number {
+  calcularTotalMes(subs: SubactividadRE[], mes: string): number {
     return subs.reduce((acc, s) => acc + (s.mensual[mes] || 0), 0);
   }
 
 
-  agruparServicios(dataOriginal: ProduccionCE[]): AgrupadoProduccionCE[] {
-    const agrupadoMap = new Map<string, AgrupadoProduccionCE>();
+  agruparServicios(dataOriginal: RepetidasCE[]): AgrupadoRepetidasCE[] {
+    const agrupadoMap = new Map<string, AgrupadoRepetidasCE>();
 
     for (const item of dataOriginal) {
       const key = `${item.cod_servicio}|${item.desc_servicio}`;
@@ -136,8 +138,8 @@ export class ProduccionComponent implements OnInit {
     return Array.from(agrupadoMap.values()).sort((a, b) => a.desc_servicio.localeCompare(b.desc_servicio));
   }
 
-  agruparSubactividades(subs: Subactividad[]): Subactividad[] {
-    const map = new Map<string, Subactividad>();
+  agruparSubactividades(subs: SubactividadRE[]): SubactividadRE[] {
+    const map = new Map<string, SubactividadRE>();
 
     for (const sub of subs) {
       const key = `${sub.cod_subactividad}|${sub.desc_subactividad}`;
@@ -164,7 +166,7 @@ export class ProduccionComponent implements OnInit {
 
   filtrarServicios() {
     const filtrados = this.lst.filter(item => {
-      const coincideCentro = this.selectedCentro?.cod_centro  ? item.cod_centro === this.selectedCentro?.cod_centro : true;
+      const coincideCentro = this.selectedCentro?.cod_centro ? item.cod_centro === this.selectedCentro?.cod_centro : true;
       const coincideRed = this.selectedRed?.cod_red ? item.cod_red === this.selectedRed?.cod_red : true;
       const coincideEspecialidad = this.filtros.cod_especialidad ? item.cod_especialidad === this.filtros.cod_especialidad : true;
       const coincideAgrupador = this.filtros.cod_agrupador ? item.cod_agrupador === this.filtros.cod_agrupador : true;
@@ -199,63 +201,64 @@ export class ProduccionComponent implements OnInit {
   }
 
 
-  getMesesDesdeDatos(datos: ProduccionCE[]): string[] {
-  const mesesSet = new Set<string>();
+  getMesesDesdeDatos(datos: RepetidasCE[]): string[] {
+    const mesesSet = new Set<string>();
 
-  datos.forEach(servicio => {
-    servicio.subactividades.forEach(sub => {
-      Object.keys(sub.mensual).forEach(mes => {
-        mesesSet.add(mes);
-      });
-    });
-  });
-
-  // Ordenar los meses
-  return Array.from(mesesSet).sort(); // ['01', '02', '03', ..., '12']
-}
-
-exportarServiciosOriginalesCompleto(): void {
-  const filasExportar: any[] = [];
-
-  this.lst.forEach(servicio => {
-    servicio.subactividades.forEach(sub => {
-      Object.keys(sub.mensual).forEach(mes => {
-        filasExportar.push({
-          cod_servicio: servicio.cod_servicio,
-          desc_servicio: servicio.desc_servicio,
-          cod_subactividad: sub.cod_subactividad,
-          desc_subactividad: sub.desc_subactividad,
-          mes,
-          cantidad: sub.mensual[mes],
-          total_subactividad: sub.total_subactividad,
-          total_servicio: servicio.total_servicio,
-
-          // 🔄 campos adicionales si vienen del backend
-          tipo_paciente: servicio.tipo_paciente || '',
-          cod_centro: servicio.cod_centro || '',
-          cod_red: servicio.cod_red || '',
-          cod_variable: servicio.cod_variable || '',
-          cod_agrupador: servicio.cod_agrupador || '',
-          cod_especialidad: servicio.cod_especialidad || ''
+    datos.forEach(servicio => {
+      servicio.subactividades.forEach(sub => {
+        Object.keys(sub.mensual).forEach(mes => {
+          mesesSet.add(mes);
         });
       });
     });
-  });
 
-  const worksheet = XLSX.utils.json_to_sheet(filasExportar);
-  const workbook = { Sheets: { 'Servicios Completos' : worksheet }, SheetNames: ['Servicios Completos'] };
-  XLSX.writeFile(workbook, `servicios-originales-completos_${new Date().getTime()}.xlsx`);
-}
+    // Ordenar los meses
+    return Array.from(mesesSet).sort(); // ['01', '02', '03', ..., '12']
+  }
 
-expandAll(): void {
-  this.expandedRows = {};
-  this.lstServicios.forEach(diag => {
-    this.expandedRows[diag.desc_servicio] = true;
-  });
-}
+  exportarServiciosOriginalesCompleto(): void {
+    const filasExportar: any[] = [];
 
-collapseAll(): void {
-  this.expandedRows = {};
-}
+    this.lst.forEach(servicio => {
+      servicio.subactividades.forEach(sub => {
+        Object.keys(sub.mensual).forEach(mes => {
+          filasExportar.push({
+            cod_servicio: servicio.cod_servicio,
+            desc_servicio: servicio.desc_servicio,
+            cod_subactividad: sub.cod_subactividad,
+            desc_subactividad: sub.desc_subactividad,
+            mes,
+            cantidad: sub.mensual[mes],
+            total_subactividad: sub.total_subactividad,
+            total_servicio: servicio.total_servicio,
+
+            // 🔄 campos adicionales si vienen del backend
+            tipo_paciente: servicio.tipo_paciente || '',
+            cod_centro: servicio.cod_centro || '',
+            cod_red: servicio.cod_red || '',
+            cod_variable: servicio.cod_variable || '',
+            cod_agrupador: servicio.cod_agrupador || '',
+            cod_especialidad: servicio.cod_especialidad || ''
+          });
+        });
+      });
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(filasExportar);
+    const workbook = { Sheets: { 'Servicios Completos': worksheet }, SheetNames: ['Registros Repetidos'] };
+    XLSX.writeFile(workbook, `registros-excluidos-completos_${new Date().getTime()}.xlsx`);
+  }
+
+  expandAll(): void {
+    this.expandedRows = {};
+    this.lstServicios.forEach(diag => {
+      this.expandedRows[diag.desc_servicio] = true;
+    });
+  }
+
+  collapseAll(): void {
+    this.expandedRows = {};
+  }
+
 
 }

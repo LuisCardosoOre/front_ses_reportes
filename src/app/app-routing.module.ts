@@ -11,15 +11,13 @@ import { AppLayoutComponent } from "./layout/app.layout.component";
                 children: [
                     { path: '', component: NotfoundComponent},
                     { path: 'produccion', loadChildren: () => import('./demo/components/page/page.module').then(m => m.PageModule) },
-                    { path: 'reportes', loadChildren: () => import('./demo/components/reportes/reportes.module').then(m => m.ReportesModule)  },
-                    { path: 'documentation', component: NotfoundComponent },
-                    { path: 'pages', component: NotfoundComponent }
+                    { path: 'reportes', loadChildren: () => import('./demo/components/reportes/reportes.module').then(m => m.ReportesModule)  }
                 ]
             },
             { path: 'auth', loadChildren: () => import('./demo/components/auth/auth.module').then(m => m.AuthModule) },
             { path: 'notfound', component: NotfoundComponent },
-            { path: '**', redirectTo: '/notfound' },
-        ], { scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled', onSameUrlNavigation: 'reload' })
+            { path: '**', redirectTo: '/notfound' }
+        ], { useHash: false, scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled', onSameUrlNavigation: 'reload' })
     ],
     exports: [RouterModule]
 })

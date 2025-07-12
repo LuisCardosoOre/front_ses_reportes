@@ -14,6 +14,7 @@ export class AppMenuComponent implements OnInit {
 
     ngOnInit() {
         this.model = [
+            /*
             {
                 label: 'Seguridad',
                 items: [
@@ -35,7 +36,28 @@ export class AppMenuComponent implements OnInit {
                     { label: 'Consulta Médica - C.E.', icon: 'pi pi-fw pi-id-card', routerLink: ['/reportes/consulta-medica'] },
                     { label: 'Producción - C.E.', icon: 'pi pi-fw pi-id-card', routerLink: ['/reportes/produccion'] },
                     { label: 'Diagnostico - C.E.', icon: 'pi pi-fw pi-id-card', routerLink: ['/reportes/diagnostico'] },
-                    { label: 'Homologada - C.E.', icon: 'pi pi-fw pi-id-card', routerLink: ['/reportes/homologadas-ce'] }
+                    { label: 'Homologada - C.E.', icon: 'pi pi-fw pi-id-card', routerLink: ['/reportes/homologadas-ce'] },
+                    { label: 'Emergencia', icon: 'pi pi-fw pi-id-card', routerLink: ['/reportes/emergencia'] },
+                    { label: 'Homologada - Emergencia', icon: 'pi pi-fw pi-id-card', routerLink: ['/reportes/homologadas-emergencia'] }
+                ]
+            }*/
+            {
+                label: 'Consulta Externa',
+                items: [
+                    { label: 'Consulta Médica', icon: 'pi pi-fw pi-id-card', routerLink: ['/reportes/consulta-medica'] },
+                    { label: 'Producción', icon: 'pi pi-fw pi-id-card', routerLink: ['/reportes/produccion'] },
+                    { label: 'Diagnostico', icon: 'pi pi-fw pi-id-card', routerLink: ['/reportes/diagnostico'] },
+                    { label: 'Repetidas', icon: 'pi pi-fw pi-id-card', routerLink: ['/reportes/repetidas'] },
+                    { label: 'Homologada', icon: 'pi pi-fw pi-id-card', routerLink: ['/reportes/homologadas-ce'] }
+
+                ]
+            },
+            {
+                label: 'Emergencia',
+                items: [
+                    
+                    { label: 'Emergencia', icon: 'pi pi-fw pi-id-card', routerLink: ['/reportes/emergencia'] },
+                    { label: 'Homologada', icon: 'pi pi-fw pi-id-card', routerLink: ['/reportes/homologadas-emergencia'] }
                 ]
             }
         ];

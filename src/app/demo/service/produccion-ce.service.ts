@@ -10,6 +10,9 @@ import { Red } from '../api/centros.models';
 import { Agrupador, Especialidad, Variable } from '../api/filtros.models';
 import { DiagnosticoOriginal } from '../api/cediagnostico.models';
 import { HomologadaCE } from '../api/cehomologada.models';
+import { EmergenciaRegistro } from '../api/ceemergencia.models';
+import { HomologadaEmergencia } from '../api/emergencia_homologada.models';
+import { RepetidasCE } from '../api/cerepetidas.models';
 
 
 @Injectable({
@@ -48,6 +51,32 @@ export class ProduccionCeService {
       })
     );
   }  
+
+  getAllRepetidas(): Observable<RepetidasCE[]> {
+    return this.httpClient.get<MensajeResponse<RepetidasCE[]>>(`${this.apiServer}/ce_repetidas`, this.httpOptions).pipe(
+      map((hojaRes: MensajeResponse<RepetidasCE[]>) => {
+        return hojaRes.data ?? [];
+      })
+    );
+  }    
+
+
+    getAllEmergencia(): Observable<EmergenciaRegistro[]> {
+    return this.httpClient.get<MensajeResponse<EmergenciaRegistro[]>>(`${this.apiServer}/emergencia_ses`, this.httpOptions).pipe(
+      map((hojaRes: MensajeResponse<EmergenciaRegistro[]>) => {
+        return hojaRes.data ?? [];
+      })
+    );
+  }  
+
+    getAllEmergenciaHomologada(): Observable<HomologadaEmergencia[]> {
+    return this.httpClient.get<MensajeResponse<HomologadaEmergencia[]>>(`${this.apiServer}/emerg_homologada_ses`, this.httpOptions).pipe(
+      map((hojaRes: MensajeResponse<HomologadaEmergencia[]>) => {
+        return hojaRes.data ?? [];
+      })
+    );
+  }  
+
 
 
 

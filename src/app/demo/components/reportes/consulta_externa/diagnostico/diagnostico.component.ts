@@ -15,8 +15,8 @@ import { ProduccionCeService } from 'src/app/demo/service/produccion-ce.service'
 export class DiagnosticoComponent implements OnInit {
 
   loading: boolean = false;
-  expandedRows = {};
-  expandedRowsDet = {};
+  expandedRows : { [key: string]: boolean } = {};
+  expandedRowsDet  = {};
 
   meses: string[] = ['01', '02', '03', '04', '05', '06'];
 
@@ -167,7 +167,7 @@ export class DiagnosticoComponent implements OnInit {
 
 
 
-    return Array.from(map.values());
+    return Array.from(map.values()).sort((a, b) => a.cod_diagnostico.localeCompare(b.cod_diagnostico));
   }
 
   agruparServicios(servicios: ServicioOriginal[]): ServicioAgrupado[] {
@@ -303,6 +303,19 @@ exportarSinAgrupar(): void {
     xlsx.writeFile(workbook, `diagnosticos-sin-agrupacion_${new Date().getTime()}.xlsx`);
   });
 }  
+
+expandAll(): void {
+  this.expandedRows = {};
+
+  this.diagnosticos.forEach(diag => {
+    this.expandedRows[diag.desc_diagnostico] = true;
+  });
+
+}
+
+collapseAll(): void {
+  this.expandedRows = {};
+}
 
 }
 
